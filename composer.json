@@ -12,5 +12,7 @@
             "Jzpeepz\\Enews\\": "src/"
         }
     },
-    "require": {}
+    "require": {
+        "pelago/emogrifier": "^2.1"
+    }
 }

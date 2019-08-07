@@ -3,13 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width"/>
-    <style>
-/**********************************************
-* Ink v1.0.4 - Copyright 2013 ZURB Inc        *
-**********************************************/
-
-/* Client-specific Styles & Reset */
-
+<style>
 #outlook a {
   padding:0;
 }
@@ -41,6 +35,8 @@ body{
   width:100% !important;
   line-height: 100% !important;
 }
+
+
 
 img {
   outline:none;
@@ -173,7 +169,7 @@ table.eleven center { min-width: 530px; }
 table.twelve center { min-width: 580px; }
 
 .body .columns td.one,
-.body .column td.one, { width: 8.333333% !important; }
+.body .column td.one { width: 8.333333% !important; }
 .body .columns td.two,
 .body .column td.two { width: 16.666666% !important; }
 .body .columns td.three,
@@ -392,7 +388,6 @@ h3 a:visited,
 h4 a:visited,
 h5 a:visited,
 h6 a:visited {
-  /*color: #555 !important; */
   color: #555 !important;
 }
 
@@ -432,9 +427,7 @@ table.large-button td {
   display: block;
   width: auto !important;
   text-align: center;
-  /*background: #000;*/
   background: #F5F5F5;
-  /*border: 1px solid #a9937c;*/
   color: #ffffff;
   padding: 8px 0;
 }
@@ -443,8 +436,8 @@ table.tiny-button td {
   padding: 5px 0 4px;
 }
 
-table.small-button td.
-table.read-button td, {
+table.small-button td,
+table.read-button td {
   padding: 8px 0 7px;
 }
 
@@ -475,7 +468,7 @@ table.tiny-button td a {
 }
 
 table.small-button td a,
-table.read-button td a,
+table.read-button td a
  {
   font-size: 16px;
 }
@@ -516,8 +509,6 @@ table.large-button:hover td {
 table.read-button td a,
 table.read-button:active td a,
 table.read-button td a:visited {
-  /*color: #f8f8f8 !important; */
-  /*color: #CFCFCF !important;*/
   color: #555 !important;
   font-style: italic;
   font-weight: normal;
@@ -599,175 +590,87 @@ body.outlook p {
   display: inline !important;
 }
 
-/*  Media Queries */
 
-/*@media only screen and (max-width: 600px) {
+table.facebook td {
+    background: #3b5998;
+    border-color: #2d4473;
+}
 
-  table[class="body"] img {
-    width: auto !important;
-    height: auto !important;
-  }
+table.facebook:hover td {
+    background: #2d4473 !important;
+}
 
-  table[class="body"] center {
-    min-width: 0 !important;
-  }
+table.twitter td {
+    background: #00acee;
+    border-color: #0087bb;
+}
 
-  table[class="body"] .container {
-    width: 95% !important;
-  }
+table.twitter:hover td {
+    background: #0087bb !important;
+}
 
-  table[class="body"] .row {
-    width: 100% !important;
-    display: block !important;
-  }
+table.google-plus td {
+    background-color: #DB4A39;
+    border-color: #CC0000;
+}
 
-  table[class="body"] .wrapper {
-    display: block !important;
-    padding-right: 0 !important;
-  }
+table.google-plus:hover td {
+    background: #CC0000 !important;
+}
 
-  table[class="body"] .columns,
-  table[class="body"] .column {
-    table-layout: fixed !important;
-    float: none !important;
-    width: 100% !important;
-    padding-right: 0px !important;
-    padding-left: 0px !important;
-    display: block !important;
-  }
+.template-label {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 11px;
+}
 
-  table[class="body"] .wrapper.first .columns,
-  table[class="body"] .wrapper.first .column {
-    display: table !important;
-  }
+.callout .panel {
+    background: #ECF8FF;
+    border-color: #b9e5ff;
+}
 
-  table[class="body"] table.columns td,
-  table[class="body"] table.column td {
-    width: 100% !important;
-  }
+.header {
+    background: #fff;
+}
 
-  table[class="body"] td.offset-by-one,
-  table[class="body"] td.offset-by-two,
-  table[class="body"] td.offset-by-three,
-  table[class="body"] td.offset-by-four,
-  table[class="body"] td.offset-by-five,
-  table[class="body"] td.offset-by-six,
-  table[class="body"] td.offset-by-seven,
-  table[class="body"] td.offset-by-eight,
-  table[class="body"] td.offset-by-nine,
-  table[class="body"] td.offset-by-ten,
-  table[class="body"] td.offset-by-eleven {
-    padding-left: 0 !important;
-  }
+.footer .wrapper {
+    background: #ebebeb;
+}
 
-  table[class="body"] .expander {
-    width: 9999px !important;
-  }
+.footer h5 {
+    padding-bottom: 10px;
+}
 
-  table[class="body"] .right-text-pad,
-  table[class="body"] .text-pad-right {
+table.columns .text-pad {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+table.columns .left-text-pad {
+    padding-left: 10px;
+}
+
+table.columns .right-text-pad {
+    padding-right: 10px;
+}
+
+.adjuggler-ad img {
+    float: none;
+    display: inline;
+}
+
+@media only screen and (max-width: 600px) {
+
+    table[class="body"] .right-text-pad {
     padding-left: 10px !important;
-  }
+    }
 
-  table[class="body"] .left-text-pad,
-  table[class="body"] .text-pad-left {
+    table[class="body"] .left-text-pad {
     padding-right: 10px !important;
-  }
-
-  table[class="body"] .hide-for-small,
-  table[class="body"] .show-for-desktop {
-    display: none !important;
-  }
-
-  table[class="body"] .show-for-small,
-  table[class="body"] .hide-for-desktop {
-    display: inherit !important;
-  }
-}*/
-
-  </style>
-  <style>
-
-    table.facebook td {
-      background: #3b5998;
-      border-color: #2d4473;
     }
+}
 
-    table.facebook:hover td {
-      background: #2d4473 !important;
-    }
-
-    table.twitter td {
-      background: #00acee;
-      border-color: #0087bb;
-    }
-
-    table.twitter:hover td {
-      background: #0087bb !important;
-    }
-
-    table.google-plus td {
-      background-color: #DB4A39;
-      border-color: #CC0000;
-    }
-
-    table.google-plus:hover td {
-      background: #CC0000 !important;
-    }
-
-    .template-label {
-      color: #ffffff;
-      font-weight: bold;
-      font-size: 11px;
-    }
-
-    .callout .panel {
-      background: #ECF8FF;
-      border-color: #b9e5ff;
-    }
-
-    .header {
-      background: #fff;
-    }
-
-    .footer .wrapper {
-      background: #ebebeb;
-    }
-
-    .footer h5 {
-      padding-bottom: 10px;
-    }
-
-    table.columns .text-pad {
-      padding-left: 10px;
-      padding-right: 10px;
-    }
-
-    table.columns .left-text-pad {
-      padding-left: 10px;
-    }
-
-    table.columns .right-text-pad {
-      padding-right: 10px;
-    }
-
-    .adjuggler-ad img {
-        float: none;
-        display: inline;
-    }
-
-    @media only screen and (max-width: 600px) {
-
-      table[class="body"] .right-text-pad {
-        padding-left: 10px !important;
-      }
-
-      table[class="body"] .left-text-pad {
-        padding-right: 10px !important;
-      }
-    }
-
-  </style>
+</style>
 </head>
 <body>
     <table class="body">

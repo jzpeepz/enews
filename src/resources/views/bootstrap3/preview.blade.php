@@ -26,9 +26,10 @@
                     <div class="row">
                         <div class="form-group col-lg-3">
                             <label for="list_id">List</label>
-                            <select name="list_id" id="list_id" class="form-control" onchange="$(this).val() == '16359' ? $('#testEmails').show() : $('#testEmails').val('').hide();">
-                                <option value="16359">Test List</option>
-                                <option value="65">Greenhead</option>
+                            <select name="list_id" id="list_id" class="form-control" onchange="$(this).val() == '{{ array_keys($lists)[0] }}' ? $('#testEmails').show() : $('#testEmails').val('').hide();">
+                                @foreach ($lists as $listId => $listLabel)
+                                <option value="{{ $listId }}">{{ $listLabel }}</option>
+                                @endforeach
                             </select>
                             <div style="margin-top: 10px;">
                                 <input type="text" id="testEmails" name="testEmails" class="form-control" placeholder="Custom test emails (comma separated)">

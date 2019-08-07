@@ -23,9 +23,12 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="">Template</label>
-                                <select name="template" class="form-control">
-                                    <option value="default">Default</option>
+                                <select class="form-control" disabled>
+                                    @foreach (config('enews.enewsletters') as $enewsConfig)
+                                    <option value="{{ $enewsConfig['key'] }}" {{ $email->template == $enewsConfig['key'] ? 'selected' : '' }}>{{ $enewsConfig['label'] }}</option>
+                                    @endforeach
                                 </select>
+                                <input type="hidden" name="template" value="{{ $email->template }}">
                             </div>
                         </div>
 
@@ -33,7 +36,9 @@
                             <div class="form-group">
                                 <label for="">Day/Zone</label>
                                 <select name="day" class="form-control">
-                                    <option value="0">Default</option>
+                                    @foreach (config('enews.days') as $dayIndex => $dayLabel)
+                                    <option value="{{ $dayIndex }}">{{ $dayLabel }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -56,7 +61,8 @@
                                name="subject"
                                class="form-control"
                                value="{{ $email->subject }}"
-                               maxlength="255">
+                               maxlength="255"
+                               required>
                     </div>
 
                     <div class="form-group">

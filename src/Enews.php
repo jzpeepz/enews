@@ -5,7 +5,6 @@ namespace Jzpeepz\Enews;
 use Pelago\Emogrifier;
 use App\Models\Publish\Article;
 use Illuminate\Database\Eloquent\Model;
-use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
 class Enews extends Model
 {
@@ -82,7 +81,9 @@ class Enews extends Model
 
     public function getZone()
     {
-        $zones = config('enews.zones');
+        $config = $this->getConfig();
+
+        $zones = $config['zones'];
 
         return isset($zones[$this->day]) ? $zones[$this->day] : null;
     }
@@ -107,29 +108,56 @@ class Enews extends Model
 
     public function getProjectId()
     {
-        return 52; // TODO: Pull this from config
+        return $this->getCampaignOption('project_id');
     }
 
     public function getUnsubListId()
     {
-        return 7; // TODO: Pull this from config
+        return $this->getCampaignOption('unsub_list');
     }
 
     public function inlineCssIntoHtml()
     {
         $css = '';
-        // $emogrifier = new Emogrifier($this->html, $css);
-        // $mergedHtml = @$emogrifier->emogrify();
-
-        // create instance
-        $cssToInlineStyles = new CssToInlineStyles();
-
-        // output
-        $mergedHtml = $cssToInlineStyles->convert($this->html, $css);
+        $emogrifier = new Emogrifier($this->html, $css);
+        $mergedHtml = @$emogrifier->emogrify();
 
         $mergedHtml = str_replace('%5B', '[', $mergedHtml);
         $mergedHtml = str_replace('%5D', ']', $mergedHtml);
 
         $this->html = $mergedHtml;
+    }
+
+    public function getConfig()
+    {
+        foreach (config('enews.enewsletters') as $config) {
+            if ($config['key'] == $this->template) {
+                return $config;
+            }
+        }
+
+        return [];
+    }
+
+    public function getCampaignOption($key)
+    {
+        $config = $this->getConfig();
+
+        $campaignOptions = $config['campaign_options'];
+
+        return isset($campaignOptions[$key]) ? $campaignOptions[$key] : null;
+    }
+
+    public function getOnlyAdestraCampaignOptions()
+    {
+        $config = $this->getConfig();
+
+        $campaignOptions = collect($config['campaign_options'])
+            ->except('name_prefix', 'project_id')
+            ->toArray();
+
+        $campaignOptions['subject_line'] = $this->subject;
+
+        return $campaignOptions;
     }
 }

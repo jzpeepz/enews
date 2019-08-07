@@ -41,11 +41,11 @@ class EnewsController extends Controller
 
         $email = new Enews;
         $email->send_at = date('n/j/Y');
+        $email->template = request()->input('template');
 
-        $articles = Article::find([
-            'tags' => 15823,
-            'pageSize' => 50,
-        ]);
+        $config = $email->getConfig();
+
+        $articles = Article::find($config['publish_parameters']);
 
         return view('enews::' . config('enews.theme') . '.form', compact('formOptions', 'email', 'articles'));
     }
@@ -73,10 +73,9 @@ class EnewsController extends Controller
 
         $email = Enews::find($id);
 
-        $articles = Article::find([
-            'tags' => 15823,
-            'pageSize' => 50,
-        ]);
+        $config = $email->getConfig();
+
+        $articles = Article::find($config['publish_parameters']);
 
         return view('enews::' . config('enews.theme') . '.form', compact('formOptions', 'email', 'articles'));
     }
@@ -103,7 +102,11 @@ class EnewsController extends Controller
     {
         $email = Enews::find($id);
 
-        return view('enews::' . config('enews.theme') . '.preview', compact('email'));
+        $config = $email->getConfig();
+
+        $lists = $config['lists'];
+
+        return view('enews::' . config('enews.theme') . '.preview', compact('email', 'lists'));
     }
 
     public function html($id)
@@ -124,6 +127,8 @@ class EnewsController extends Controller
     {
         $email = Enews::find($id);
 
+        $config = $email->getConfig();
+
         $list_id = $_POST['list_id'];
         $scheduled_for = isset($_POST['scheduled_for']) ? $_POST['scheduled_for'] : null;
         $testEmails = isset($_POST['testEmails']) && !empty($_POST['testEmails']) ? $_POST['testEmails'] : null;
@@ -140,13 +145,13 @@ class EnewsController extends Controller
             // echo 'Updating campaign...';
             $campaign = AdestraCampaign::find($email->campaign_id, $debug)
                 ->update([
-                    'name' => 'Greenhead Enews ' . date('n/j/Y'),
+                    'name' => $email->getCampaignOption('name_prefix') . ' ' . date('n/j/Y'),
                     'description' => $email->subject . ' ' . date('n/j/Y'),
                     'list_id' => $list_id,
                 ]);
         } else {
             $campaign = AdestraCampaign::make([
-                'name' => 'Greenhead Enews ' . date('n/j/Y'),
+                'name' => $email->getCampaignOption('name_prefix') . ' ' . date('n/j/Y'),
                 'description' => $email->subject . ' ' . date('n/j/Y'),
                 'project_id' => $email->getProjectId(),
                 'list_id' => $list_id,
@@ -154,19 +159,7 @@ class EnewsController extends Controller
             ->create();
         }
 
-        $campaign->setAllOptions([
-            'subject_line' => $email->subject,
-            'domain' => 'email.greenhead.net',
-            'from_prefix' => 'mail',
-            'from_name' => 'Greenhead',
-            'auto_tracking' => 1,
-            'user_from' => 1,
-            'from_address' => 'enews@greenhead.net',
-            'user_reply' => 1,
-            'reply_address' => 'enews@greenhead.net',
-            'reply_name' => 'Greenhead',
-            'unsub_list' => $email->getUnsubListId(),
-        ])
+        $campaign->setAllOptions($email->getOnlyAdestraCampaignOptions())
         ->setMessage('html', $email->html)
         ->setMessage('text', $email->text)
         ->publish();

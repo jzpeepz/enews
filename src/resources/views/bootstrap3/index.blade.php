@@ -10,7 +10,22 @@
                 <h3 class="panel-title">Enewsletter Manager</h3>
 
                 <div>
-                    <a href="{{ route('jzpeepz.enews.create') }}" class="btn btn-success btn-xs">Create Enews</a>
+                    @if (count(config('enews.enewsletters')) > 1)
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Create Enews <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                @foreach (config('enews.enewsletters') as $enewsConfig)
+                                <li><a href="{{ route('jzpeepz.enews.create', ['template' => $enewsConfig['key']]) }}">{{ $enewsConfig['label'] }}</a></li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @else
+                        @foreach (config('enews.enewsletters') as $enewsConfig)
+                        <a href="{{ route('jzpeepz.enews.create', ['template' => $enewsConfig['key']]) }}" class="btn btn-success btn-xs">Create Enews</a>
+                        @endforeach
+                    @endif
                 </div>
             </div>
             @if ($enews->isEmpty())

@@ -5,6 +5,7 @@ namespace Jzpeepz\Enews;
 use Pelago\Emogrifier;
 use App\Models\Publish\Article;
 use Illuminate\Database\Eloquent\Model;
+use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
 class Enews extends Model
 {
@@ -117,8 +118,14 @@ class Enews extends Model
     public function inlineCssIntoHtml()
     {
         $css = '';
-        $emogrifier = new Emogrifier($this->html, $css);
-        $mergedHtml = @$emogrifier->emogrify();
+        // $emogrifier = new Emogrifier($this->html, $css);
+        // $mergedHtml = @$emogrifier->emogrify();
+
+        // create instance
+        $cssToInlineStyles = new CssToInlineStyles();
+
+        // output
+        $mergedHtml = $cssToInlineStyles->convert($this->html, $css);
 
         $mergedHtml = str_replace('%5B', '[', $mergedHtml);
         $mergedHtml = str_replace('%5D', ']', $mergedHtml);

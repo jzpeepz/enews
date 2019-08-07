@@ -1,0 +1,16 @@
+{
+    "name": "jzpeepz/enews",
+    "description": "Frontend for sending enewsletters in a Laravel application.",
+    "authors": [
+        {
+            "name": "Jonathan Peoples",
+            "email": "jonathan.peoples@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Jzpeepz\\Enews\\": "src/"
+        }
+    },
+    "require": {}
+}

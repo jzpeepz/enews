@@ -4,6 +4,7 @@ return [
     'theme' => 'bootstrap3',
     'layout' => 'layouts.admin.master',
     'layout_section' => 'content',
+    'publish_namespace' => '\\App\\Models\\Publish\\',
 
     // listing of days that appears on form
     'days' => [
@@ -48,6 +49,23 @@ return [
                 'reply_name' => 'Greenhead',
                 'unsub_list' => 7,
             ],
+
+            'banners' => [
+                [
+                    'name' => '300x250-1',
+                    'size' => 2123,
+                    'postiion' => 1,
+                    'width' => 300,
+                    'height' => 250,
+                ],
+                [
+                    'name' => '300x250-2',
+                    'size' => 2123,
+                    'position' => 2,
+                    'width' => 300,
+                    'height' => 250,
+                ]
+            ]
         ]
     ],
 ];

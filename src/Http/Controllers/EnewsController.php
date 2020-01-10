@@ -3,9 +3,9 @@
 namespace Jzpeepz\Enews\Http\Controllers;
 
 use Jzpeepz\Enews\Enews;
-use Jzpeepz\Adestra\AdestraCampaign;
 use Illuminate\Routing\Controller;
-use App\Models\Publish\Article;
+use Jzpeepz\Adestra\AdestraCampaign;
+use Illuminate\Support\Facades\Config;
 
 class EnewsController extends Controller
 {
@@ -22,7 +22,7 @@ class EnewsController extends Controller
 
         // set current site for use in various places
         view()->share('current_site', $this->site);
-        \Config::set('site', $this->site);
+        Config::set('site', $this->site);
     }
 
     public function index()
@@ -45,7 +45,9 @@ class EnewsController extends Controller
 
         $config = $email->getConfig();
 
-        $articles = Article::find($config['publish_parameters']);
+        $articleClass = Enews::getPublishArticleClass();
+
+        $articles = $articleClass::find($config['publish_parameters']);
 
         return view('enews::' . config('enews.theme') . '.form', compact('formOptions', 'email', 'articles'));
     }
@@ -75,7 +77,9 @@ class EnewsController extends Controller
 
         $config = $email->getConfig();
 
-        $articles = Article::find($config['publish_parameters']);
+        $articleClass = Enews::getPublishArticleClass();
+
+        $articles = $articleClass::find($config['publish_parameters']);
 
         return view('enews::' . config('enews.theme') . '.form', compact('formOptions', 'email', 'articles'));
     }
@@ -140,22 +144,27 @@ class EnewsController extends Controller
 
         $debug = false;
 
+        $campaignOptions = [
+            'name' => $email->getCampaignOption('name_prefix') . ' ' . date('n/j/Y'),
+            'description' => $email->subject . ' ' . date('n/j/Y'),
+            'list_id' => $list_id,
+        ];
+
+        $filterId = $email->getFilterId();
+
+        if (!empty($filterId)) {
+            $campaignOptions['filter_id'] = $filterId;
+        }
+
         // use the existing campaign if available
         if (!empty($email->campaign_id)) {
             // echo 'Updating campaign...';
             $campaign = AdestraCampaign::find($email->campaign_id, $debug)
-                ->update([
-                    'name' => $email->getCampaignOption('name_prefix') . ' ' . date('n/j/Y'),
-                    'description' => $email->subject . ' ' . date('n/j/Y'),
-                    'list_id' => $list_id,
-                ]);
+                ->update($campaignOptions);
         } else {
-            $campaign = AdestraCampaign::make([
-                'name' => $email->getCampaignOption('name_prefix') . ' ' . date('n/j/Y'),
-                'description' => $email->subject . ' ' . date('n/j/Y'),
-                'project_id' => $email->getProjectId(),
-                'list_id' => $list_id,
-            ], $debug)
+            $campaignOptions['project_id'] = $email->getProjectId();
+
+            $campaign = AdestraCampaign::make($campaignOptions, $debug)
             ->create();
         }
 

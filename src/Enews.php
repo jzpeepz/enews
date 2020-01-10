@@ -3,7 +3,6 @@
 namespace Jzpeepz\Enews;
 
 use Pelago\Emogrifier;
-use App\Models\Publish\Article;
 use Illuminate\Database\Eloquent\Model;
 
 class Enews extends Model
@@ -68,13 +67,23 @@ class Enews extends Model
     {
         $zone = $this->getZone();
 
+        $config = $this->getConfig();
+
         $uniqueKey = "[*data('email')*]-" . $zone . '-' . date('YmdHis');
 
-        $banners = [
-            'leaderboard' => '<a href="http://ABPG.nui.media/pipeline/' . $zone . '/0/cc?z=ABPG&pos=1&session=no&ajkey=' . $uniqueKey . '-007-' . $this->id . '"><img src="http://ABPG.nui.media/pipeline/' . $zone . '/0/vc?z=ABPG&dim=391&kw=&click=&pos=1&session=no&ajkey=' . $uniqueKey . '-007-' . $this->id . '" width="728" height="90" alt="" border="0"></a>',
-            'box_1' => '<a class="adjuggler-ad" href="http://ABPG.nui.media/pipeline/' . $zone . '/0/cc?z=ABPG&pos=1&session=no&ajkey=' . $uniqueKey . '-005-' . $this->id . '"><img src="http://ABPG.nui.media/pipeline/' . $zone . '/0/vc?z=ABPG&dim=2123&kw=&click=&pos=1&session=no&ajkey=' . $uniqueKey . '-005-' . $this->id . '" width="300" height="250" alt="" border="0"></a>',
-            'skyscraper' => '<a href="http://ABPG.nui.media/pipeline/' . $zone . '/0/cc?z=ABPG&pos=2&session=no&ajkey=' . $uniqueKey . '-006-' . $this->id . '"><img src="http://ABPG.nui.media/pipeline/' . $zone . '/0/vc?z=ABPG&dim=392&kw=&click=&pos=2&session=no&ajkey=' . $uniqueKey . '-006-' . $this->id . '" width="160" height="600" alt="" border="0"></a>',
-        ];
+        if (isset($config['banners'])) {
+            $banners = [];
+
+            foreach ($config['banners'] as $bannerConfig) {
+                $banners[$bannerConfig['name']] = '<a href="http://ABPG.nui.media/pipeline/' . $zone . '/0/cc?z=ABPG&pos=' . $bannerConfig['position'] . '&session=no&ajkey=' . $uniqueKey . '-007-' . $this->id . '"><img src="http://ABPG.nui.media/pipeline/' . $zone . '/0/vc?z=ABPG&dim=' . $bannerConfig['size'] . '&kw=&click=&pos=' . $bannerConfig['position'] . '&session=no&ajkey=' . $uniqueKey . '-007-' . $this->id . '" width="' . $bannerConfig['width'] . '" height="' . $bannerConfig['height'] . '" alt="" border="0"></a>';
+            }
+        } else {
+            $banners = [
+                'leaderboard' => '<a href="http://ABPG.nui.media/pipeline/' . $zone . '/0/cc?z=ABPG&pos=1&session=no&ajkey=' . $uniqueKey . '-007-' . $this->id . '"><img src="http://ABPG.nui.media/pipeline/' . $zone . '/0/vc?z=ABPG&dim=391&kw=&click=&pos=1&session=no&ajkey=' . $uniqueKey . '-007-' . $this->id . '" width="728" height="90" alt="" border="0"></a>',
+                'box_1' => '<a class="adjuggler-ad" href="http://ABPG.nui.media/pipeline/' . $zone . '/0/cc?z=ABPG&pos=1&session=no&ajkey=' . $uniqueKey . '-005-' . $this->id . '"><img src="http://ABPG.nui.media/pipeline/' . $zone . '/0/vc?z=ABPG&dim=2123&kw=&click=&pos=1&session=no&ajkey=' . $uniqueKey . '-005-' . $this->id . '" width="300" height="250" alt="" border="0"></a>',
+                'skyscraper' => '<a href="http://ABPG.nui.media/pipeline/' . $zone . '/0/cc?z=ABPG&pos=2&session=no&ajkey=' . $uniqueKey . '-006-' . $this->id . '"><img src="http://ABPG.nui.media/pipeline/' . $zone . '/0/vc?z=ABPG&dim=392&kw=&click=&pos=2&session=no&ajkey=' . $uniqueKey . '-006-' . $this->id . '" width="160" height="600" alt="" border="0"></a>',
+            ];
+        }
 
         return $banners[$name];
     }
@@ -92,11 +101,13 @@ class Enews extends Model
     {
         $articles = [];
 
+        $articleClass = Enews::getPublishArticleClass();
+
         foreach ($this->articles as $id) {
-            $articles[] = Article::find(['id' => $id]);
+            $articles[] = $articleClass::find(['id' => $id]);
         }
 
-        return $articles;
+        return collect($articles);
     }
 
     public function getGoogleTracker()
@@ -109,6 +120,11 @@ class Enews extends Model
     public function getProjectId()
     {
         return $this->getCampaignOption('project_id');
+    }
+
+    public function getFilterId()
+    {
+        return $this->getCampaignOption('filter_id');
     }
 
     public function getUnsubListId()
@@ -153,11 +169,16 @@ class Enews extends Model
         $config = $this->getConfig();
 
         $campaignOptions = collect($config['campaign_options'])
-            ->except('name_prefix', 'project_id')
+            ->except('name_prefix', 'project_id', 'filter_id')
             ->toArray();
 
         $campaignOptions['subject_line'] = $this->subject;
 
         return $campaignOptions;
+    }
+
+    public static function getPublishArticleClass()
+    {
+        return config('enews.publish_namespace', '\\App\\Models\\Publish\\') . 'Article';
     }
 }
